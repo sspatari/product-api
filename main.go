@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ import (
 )
 
 func main() {
+	port := 9090
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
 
 	hh := handlers.NewHello(l)
@@ -23,7 +25,7 @@ func main() {
 	sm.Handle("/goodbye", gh)
 
 	s := &http.Server{
-		Addr:         ":9090",
+		Addr:         fmt.Sprintf(":%d", port),
 		Handler:      sm,
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,
@@ -31,9 +33,10 @@ func main() {
 	}
 
 	go func() {
-		err := s.ListenAndServe()
-		if err != nil {
-			l.Fatal(err)
+		if err := s.ListenAndServe(); err != nil {
+			if err != http.ErrServerClosed {
+				l.Fatal(err)
+			}
 		}
 	}()
 
@@ -46,5 +49,9 @@ func main() {
 	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	s.Shutdown(tc)
+	if err := s.Shutdown(tc); err != nil {
+		l.Fatal(err)
+	}
+
+	l.Println("Shutdown completed")
 }
