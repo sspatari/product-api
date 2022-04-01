@@ -17,12 +17,10 @@ func main() {
 	port := 9090
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
 
-	hh := handlers.NewHello(l)
-	gh := handlers.NewGoodbye(l)
+	ph := handlers.NewProduct(l)
 
 	sm := http.NewServeMux()
-	sm.Handle("/", hh)
-	sm.Handle("/goodbye", gh)
+	sm.Handle("/", ph)
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", port),
