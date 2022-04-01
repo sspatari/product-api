@@ -1,3 +1,3 @@
-module github.com/sspatari/simple-server
+module github.com/sspatari/product-api
 
 go 1.17

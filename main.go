@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/sspatari/simple-server/handlers"
+	"github.com/sspatari/product-api/handlers"
 )
 
 func main() {
